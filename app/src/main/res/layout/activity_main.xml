@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        tools:context="com.ongo.firebasechatlibrary.MainActivity">
+
+        <Button
+            android:id="@+id/chatBTN1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:text="Chat User A"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/chatBTN2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/colorAccent"
+            android:text="Chat User B"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/userBTN1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/colorAccent"
+            android:text="User B chats list"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/userBTN2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@color/colorAccent"
+            android:text="User A chats list"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</layout>

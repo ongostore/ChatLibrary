@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">FirebaseChatLib</string>
+    <string name="mall_id">2</string>
+    <string name="fcm_auth_key">key=AIzaSyArHdw_1LsVrEwCng3ZndLm4VUF1-RA4UU</string>
+</resources>
