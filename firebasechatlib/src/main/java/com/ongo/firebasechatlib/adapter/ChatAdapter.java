@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ongo.firebasechatlib.R;
 import com.ongo.firebasechatlib.dto.ChatDto;
-import com.ongo.firebasechatlib.utils.OnGoConstants;
+import com.ongo.firebasechatlib.utils.ChatOnGoConstants;
 import com.ongo.firebasechatlib.utils.Utils;
 import com.squareup.picasso.Picasso;
 
@@ -39,7 +39,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
         this.mContext = mContext;
         this.chatDtoArrayList = chatDtoArrayList;
         this.selectedUserId = selectedUserId;
-        mPref = mContext.getSharedPreferences(OnGoConstants.PREF_NAME, Context.MODE_PRIVATE);
+        mPref = mContext.getSharedPreferences(ChatOnGoConstants.PREF_NAME, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
         /*Picasso.with(mContext).load(image)*//*.placeholder(R.mipmap.load_small)*//*.into(holder.image_r);*/
 
 
-        if (chatDtoArrayList.get(position).senderId.equalsIgnoreCase(mPref.getString(OnGoConstants.PREF_USER_ID, ""))) {
+        if (chatDtoArrayList.get(position).senderId.equalsIgnoreCase(mPref.getString(ChatOnGoConstants.PREF_USER_ID, ""))) {
 
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) holder.cardView.getLayoutParams();
 
@@ -89,9 +89,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
 
         } else {
             // which means other user sent me a message which i have to set status for
-            FirebaseDatabase.getInstance().getReference(OnGoConstants.FIREBASE_T_MESSAGES)
+            FirebaseDatabase.getInstance().getReference(ChatOnGoConstants.FIREBASE_T_MESSAGES)
                     .child(chatDtoArrayList.get(position).msgId)
-                    .child(chatDtoArrayList.get(position).key).child(OnGoConstants.READ).setValue(true);
+                    .child(chatDtoArrayList.get(position).key).child(ChatOnGoConstants.READ).setValue(true);
         }
 
 
@@ -107,21 +107,21 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-                        FirebaseDatabase.getInstance().getReference(OnGoConstants.FIREBASE_T_MESSAGES)
+                        FirebaseDatabase.getInstance().getReference(ChatOnGoConstants.FIREBASE_T_MESSAGES)
                                 .child(chatDtoArrayList.get(position).msgId)
                                 .child(chatDtoArrayList.get(position).key).setValue(null);
 
-                        FirebaseDatabase.getInstance().getReference(OnGoConstants.FIREBASE_T_USERS)
+                        FirebaseDatabase.getInstance().getReference(ChatOnGoConstants.FIREBASE_T_USERS)
                                 .child(selectedUserId)
-                                .child(OnGoConstants.FIREBASE_K_MSGGRPIDS)
+                                .child(ChatOnGoConstants.FIREBASE_K_MSGGRPIDS)
                                 .child(mContext.getString(R.string.mall_id))
-                                .child(OnGoConstants.FIREBASE_T_MESSAGE).setValue(null);
+                                .child(ChatOnGoConstants.FIREBASE_T_MESSAGE).setValue(null);
 
-                        FirebaseDatabase.getInstance().getReference(OnGoConstants.FIREBASE_T_USERS)
+                        FirebaseDatabase.getInstance().getReference(ChatOnGoConstants.FIREBASE_T_USERS)
                                 .child(mContext.getString(R.string.mall_id))
-                                .child(OnGoConstants.FIREBASE_K_MSGGRPIDS)
+                                .child(ChatOnGoConstants.FIREBASE_K_MSGGRPIDS)
                                 .child(selectedUserId)
-                                .child(OnGoConstants.FIREBASE_T_MESSAGE).setValue(null);
+                                .child(ChatOnGoConstants.FIREBASE_T_MESSAGE).setValue(null);
                         dialog.dismiss();
                     }
 

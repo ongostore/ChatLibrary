@@ -27,7 +27,7 @@ public class SharedPref {
 
     public static void init(Context context) {
         if (mSharedPref == null)
-            mSharedPref = context.getSharedPreferences(OnGoConstants.PREF_NAME, Activity.MODE_PRIVATE);
+            mSharedPref = context.getSharedPreferences(ChatOnGoConstants.PREF_NAME, Activity.MODE_PRIVATE);
     }
 
     public static String read(String key, String defValue) {

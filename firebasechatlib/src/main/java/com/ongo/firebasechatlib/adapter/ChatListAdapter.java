@@ -23,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.ongo.firebasechatlib.R;
 import com.ongo.firebasechatlib.activities.ChatActivity;
 import com.ongo.firebasechatlib.dto.UserDto;
-import com.ongo.firebasechatlib.utils.OnGoConstants;
+import com.ongo.firebasechatlib.utils.ChatOnGoConstants;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
@@ -57,7 +57,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.MyView
 
         this.chatDtoArrayList = chatDtoArrayList;
         firebaseDatabase = FirebaseDatabase.getInstance();
-        mPref = mContext.getSharedPreferences(OnGoConstants.PREF_NAME, Context.MODE_PRIVATE);
+        mPref = mContext.getSharedPreferences(ChatOnGoConstants.PREF_NAME, Context.MODE_PRIVATE);
         mPref_Editor = mPref.edit();
 
     }
@@ -79,13 +79,13 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.MyView
 
           /*  final String imageUrl = jsonObject.getString("Image");
             final String userId = jsonObject.getString("id");*/
-            String mallId = mPref.getString(OnGoConstants.PREF_USER_ID, "");
+            String mallId = mPref.getString(ChatOnGoConstants.PREF_USER_ID, "");
 //............................
             firebaseDatabase = FirebaseDatabase.getInstance();
             DatabaseReference reference = firebaseDatabase.getReference()
                     .child("UsersChat")
                     .child(mallId)
-                    .child(OnGoConstants.FIREBASE_K_MSGGRPIDS)
+                    .child(ChatOnGoConstants.FIREBASE_K_MSGGRPIDS)
                     .child(chatDtoArrayList.get(position).uid);
 
 
@@ -172,8 +172,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.MyView
                                 holder.tvtime.setText(time);
                             }*/
 
-                            if (dataSnapshot.hasChild(OnGoConstants.FIREBASE_K_UNREADCOUNT)) {
-                                Long unreadCount = (Long) dataSnapshot.child(OnGoConstants.FIREBASE_K_UNREADCOUNT).getValue();
+                            if (dataSnapshot.hasChild(ChatOnGoConstants.FIREBASE_K_UNREADCOUNT)) {
+                                Long unreadCount = (Long) dataSnapshot.child(ChatOnGoConstants.FIREBASE_K_UNREADCOUNT).getValue();
                                 if (unreadCount != 0) {
                                     holder.tvCount.setVisibility(View.VISIBLE);
                                     holder.tvCount.setText(unreadCount + "");
@@ -256,10 +256,10 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.MyView
                     Intent intent = new Intent(mContext, ChatActivity.class);
 
                     Bundle bundle = new Bundle();
-                    bundle.putString(OnGoConstants.SELECTED_USER_ID, chatDtoArrayList.get(position).uid);
-                    bundle.putString(OnGoConstants.SELECTED_USER_PROFPIC, imageUrl);
-                    bundle.putString(OnGoConstants.SELECTED_USER_USERNAME, name);
-                    bundle.putLong(OnGoConstants.FIREBASE_K_UNREADCOUNT, Long.parseLong(holder.tvCount.getText().toString()));
+                    bundle.putString(ChatOnGoConstants.SELECTED_USER_ID, chatDtoArrayList.get(position).uid);
+                    bundle.putString(ChatOnGoConstants.SELECTED_USER_PROFPIC, imageUrl);
+                    bundle.putString(ChatOnGoConstants.SELECTED_USER_USERNAME, name);
+                    bundle.putLong(ChatOnGoConstants.FIREBASE_K_UNREADCOUNT, Long.parseLong(holder.tvCount.getText().toString()));
                     intent.putExtras(bundle);
                     mContext.startActivity(intent);
                 }
@@ -299,7 +299,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.MyView
 
         firebaseDatabase = FirebaseDatabase.getInstance();
 
-        DatabaseReference userDataRef = firebaseDatabase.getReference("UsersChat").child(mPref.getString(OnGoConstants.PREF_USER_ID, "")).child("msg_grp_ids");
+        DatabaseReference userDataRef = firebaseDatabase.getReference("UsersChat").child(mPref.getString(ChatOnGoConstants.PREF_USER_ID, "")).child("msg_grp_ids");
 
         if (selectedUids.size() > 0) {
             Iterator<String> iterator = selectedUids.iterator();

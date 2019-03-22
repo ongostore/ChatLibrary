@@ -26,7 +26,7 @@ public class Utils {
     private static ProgressDialog mProgressDialog;
     public static String getTimeFromMilliseconds(String milliseconds) {
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat(OnGoConstants.TIME_MMDDYYYY_HH_MM_SS);
+            SimpleDateFormat sdf = new SimpleDateFormat(ChatOnGoConstants.TIME_MMDDYYYY_HH_MM_SS);
             long milliSeconds = Long.parseLong(milliseconds);
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(milliSeconds);

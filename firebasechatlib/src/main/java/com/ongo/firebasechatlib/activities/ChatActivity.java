@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,7 +25,7 @@ import com.ongo.firebasechatlib.R;
 import com.ongo.firebasechatlib.adapter.ChatAdapter;
 import com.ongo.firebasechatlib.async_tasks.SendNotificationWithPayLoadAsync;
 import com.ongo.firebasechatlib.dto.ChatDto;
-import com.ongo.firebasechatlib.utils.OnGoConstants;
+import com.ongo.firebasechatlib.utils.ChatOnGoConstants;
 import com.ongo.firebasechatlib.utils.SharedPref;
 import com.ongo.firebasechatlib.utils.Utils;
 import com.squareup.picasso.Picasso;
@@ -61,11 +62,12 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Firebase.setAndroidContext(getApplicationContext());
+        FirebaseApp.initializeApp(getApplicationContext());
         mContext = this;
         setContentView(R.layout.fragment_chat_new);
         SharedPref.init(mContext);
-        mPref = getSharedPreferences(OnGoConstants.PREF_NAME, MODE_PRIVATE);
+        mPref = getSharedPreferences(ChatOnGoConstants.PREF_NAME, MODE_PRIVATE);
         mPrefEdit = mPref.edit();
 
         recyclerView = (RecyclerView) findViewById(R.id.rvData);
@@ -77,15 +79,15 @@ public class ChatActivity extends AppCompatActivity {
         tvStatus = (TextView) findViewById(R.id.tvStatus);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
-        userName = SharedPref.read(OnGoConstants.PREF_USER_NAME, "");
+        userName = SharedPref.read(ChatOnGoConstants.PREF_USER_NAME, "");
 
         Bundle bundle = getIntent().getExtras();
-        selectedUserId = bundle.getString(OnGoConstants.SELECTED_USER_ID);                    //client (userid(ex:1907))
-        selectedUserProfPic = bundle.getString(OnGoConstants.SELECTED_USER_PROFPIC);
-        selectedUserName = bundle.getString(OnGoConstants.SELECTED_USER_USERNAME);
-        selectedUserUnread = bundle.getLong(OnGoConstants.FIREBASE_K_UNREADCOUNT);
+        selectedUserId = bundle.getString(ChatOnGoConstants.SELECTED_USER_ID);                    //client (userid(ex:1907))
+        selectedUserProfPic = bundle.getString(ChatOnGoConstants.SELECTED_USER_PROFPIC);
+        selectedUserName = bundle.getString(ChatOnGoConstants.SELECTED_USER_USERNAME);
+        selectedUserUnread = bundle.getLong(ChatOnGoConstants.FIREBASE_K_UNREADCOUNT);
 
-        mallId = mPref.getString(OnGoConstants.PREF_USER_ID, "");                     //102
+        mallId = mPref.getString(ChatOnGoConstants.PREF_USER_ID, "");                     //102
 
         back_img.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,14 +100,14 @@ public class ChatActivity extends AppCompatActivity {
         DatabaseReference reference = firebaseDatabase.getReference()
                 .child("UsersChat")
                 .child(selectedUserId)                                           //userid(ex:1907)
-                .child(OnGoConstants.FIREBASE_K_MSGGRPIDS)
+                .child(ChatOnGoConstants.FIREBASE_K_MSGGRPIDS)
                 .child(mallId);                                                //102
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChild(OnGoConstants.FIREBASE_K_UNREADCOUNT)) {
-                    Long unreadCount = (Long) dataSnapshot.child(OnGoConstants.FIREBASE_K_UNREADCOUNT).getValue();
+                if (dataSnapshot.hasChild(ChatOnGoConstants.FIREBASE_K_UNREADCOUNT)) {
+                    Long unreadCount = (Long) dataSnapshot.child(ChatOnGoConstants.FIREBASE_K_UNREADCOUNT).getValue();
 
                     if (unreadCount != 0) {
                         selectedUserUnread = unreadCount;
@@ -127,20 +129,20 @@ public class ChatActivity extends AppCompatActivity {
         /*FirebaseDatabase.getInstance().getReference()
                 .child("UsersChat")
                 .child(Utils.getMallId(mContext))              // 102
-                .child(OnGoConstants.FIREBASE_K_MSGGRPIDS)
+                .child(ChatOnGoConstants.FIREBASE_K_MSGGRPIDS)
                 .child(selectedUserId)                      //1907
-                .child(OnGoConstants.FIREBASE_K_UNREADCOUNT)
+                .child(ChatOnGoConstants.FIREBASE_K_UNREADCOUNT)
                 .setValue(0);*/
 
         FirebaseDatabase.getInstance().getReference()
-                .child(OnGoConstants.BASIC_PROFILE)
+                .child(ChatOnGoConstants.BASIC_PROFILE)
                 .child(mallId)
-                .child(OnGoConstants.USER_STATUS)
+                .child(ChatOnGoConstants.USER_STATUS)
                 .setValue("offline");
         FirebaseDatabase.getInstance().getReference()
-                .child(OnGoConstants.BASIC_PROFILE)
+                .child(ChatOnGoConstants.BASIC_PROFILE)
                 .child(selectedUserId)
-                .child(OnGoConstants.USER_STATUS)
+                .child(ChatOnGoConstants.USER_STATUS)
 
                 .addValueEventListener(new ValueEventListener() {
                     @Override
@@ -171,17 +173,17 @@ public class ChatActivity extends AppCompatActivity {
 
                 if (etMessage.getText().toString() != null && etMessage.getText().toString().length() > 0) {
 
-                    reference1 = new Firebase(OnGoConstants.FIREBASE_PATH + OnGoConstants.FIREBASE_T_MESSAGES + "/" + msgId);
+                    reference1 = new Firebase(ChatOnGoConstants.FIREBASE_PATH + ChatOnGoConstants.FIREBASE_T_MESSAGES + "/" + msgId);
 
 
 //                    DatabaseReference databaseReference = firebaseDatabase.getReference()
-//                            .child(OnGoConstants.FIREBASE_T_MESSAGES).child(msgId).child(System.currentTimeMillis() + "");
+//                            .child(ChatOnGoConstants.FIREBASE_T_MESSAGES).child(msgId).child(System.currentTimeMillis() + "");
 
                     HashMap<String, Object> hashMap = new HashMap<>();
                     hashMap.put("message", etMessage.getText().toString());
                     hashMap.put("senderId", mallId);
-                    hashMap.put("name", SharedPref.read(OnGoConstants.PREF_USER_NAME, ""));
-                    //hashMap.put("image_url", SharedPref.read(OnGoConstants.PREF_PROFILE_IMAGE, ""));
+                    hashMap.put("name", SharedPref.read(ChatOnGoConstants.PREF_USER_NAME, ""));
+                    //hashMap.put("image_url", SharedPref.read(ChatOnGoConstants.PREF_PROFILE_IMAGE, ""));
                     hashMap.put("timeStamp", System.currentTimeMillis() + "");
                     hashMap.put("read", false);
 //                    databaseReference.setValue(hashMap);
@@ -205,7 +207,7 @@ public class ChatActivity extends AppCompatActivity {
                     try {
                         payload.put("id", mallId);
                         payload.put("image", selectedUserProfPic);
-                        payload.put("senderName", mPref.getString(OnGoConstants.Name, ""));
+                        payload.put("senderName", mPref.getString(ChatOnGoConstants.Name, ""));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -220,68 +222,68 @@ public class ChatActivity extends AppCompatActivity {
                     }
 
                     hashNoti.put("senderId", mallId);
-                    //hashNoti.put("timeStamp", Utils.getCurrentTime(OnGoConstants.TIME_MMDDYYYY_HH_MM_SS));
+                    //hashNoti.put("timeStamp", Utils.getCurrentTime(ChatOnGoConstants.TIME_MMDDYYYY_HH_MM_SS));
                     hashNoti.put("timeStamp", System.currentTimeMillis() + "");
 
                     /**************** this reference2 is to create the notification msgs for clients  *********/
-                    reference2 = new Firebase(OnGoConstants.FIREBASE_PATH + OnGoConstants.FIREBASE_T_NOTIFICATION + "/" +
+                    reference2 = new Firebase(ChatOnGoConstants.FIREBASE_PATH + ChatOnGoConstants.FIREBASE_T_NOTIFICATION + "/" +
                             getString(R.string.mall_id));
                     reference2.push().setValue(hashNoti);
                     /**************** this reference2 is to create the notification msgs for user itself  *********/
-                    reference3 = new Firebase(OnGoConstants.FIREBASE_PATH + OnGoConstants.FIREBASE_T_NOTIFICATION + "/" +
+                    reference3 = new Firebase(ChatOnGoConstants.FIREBASE_PATH + ChatOnGoConstants.FIREBASE_T_NOTIFICATION + "/" +
                             selectedUserId);
                     reference3.push().setValue(hashNoti);
 
                     FirebaseDatabase.getInstance().getReference("UsersChat")
                             .child(mallId)
-                            .child(OnGoConstants.FIREBASE_K_MSGGRPIDS)      //
+                            .child(ChatOnGoConstants.FIREBASE_K_MSGGRPIDS)      //
                             .child(selectedUserId)
-                            .child(OnGoConstants.FIREBASE_T_MESSAGE)
+                            .child(ChatOnGoConstants.FIREBASE_T_MESSAGE)
                             .setValue(etMessage.getText().toString());
 
                     FirebaseDatabase.getInstance().getReference("UsersChat")
                             .child(selectedUserId)
-                            .child(OnGoConstants.FIREBASE_K_MSGGRPIDS)      //
+                            .child(ChatOnGoConstants.FIREBASE_K_MSGGRPIDS)      //
                             .child(mallId)
-                            .child(OnGoConstants.FIREBASE_T_MESSAGE)
+                            .child(ChatOnGoConstants.FIREBASE_T_MESSAGE)
                             .setValue(etMessage.getText().toString());
                        /* FirebaseDatabase.getInstance().getReference("UsersChat")
                                 .child(selectedUserId)
-                                .child(OnGoConstants.FIREBASE_K_MSGGRPIDS)      //
+                                .child(ChatOnGoConstants.FIREBASE_K_MSGGRPIDS)      //
                                 .child(mallId)
-                                .child(OnGoConstants.FIREBASE_K_LASTTIMESTAMP)
-                                .setValue(Utils.getCurrentTime(OnGoConstants.TIME_MMDDYYYY_HH_MM_SS));*/
+                                .child(ChatOnGoConstants.FIREBASE_K_LASTTIMESTAMP)
+                                .setValue(Utils.getCurrentTime(ChatOnGoConstants.TIME_MMDDYYYY_HH_MM_SS));*/
 
                     etMessage.setText("");
 
 
                         /*FirebaseDatabase.getInstance().getReference("UsersChat")
                                 .child(mallId)
-                                .child(OnGoConstants.FIREBASE_K_MSGGRPIDS)      //
+                                .child(ChatOnGoConstants.FIREBASE_K_MSGGRPIDS)      //
                                 .child(selectedUserId)
-                                .child(OnGoConstants.FIREBASE_K_LASTTIMESTAMP)
-                                .setValue(Utils.getCurrentTime(OnGoConstants.TIME_MMDDYYYY_HH_MM_SS));*/
+                                .child(ChatOnGoConstants.FIREBASE_K_LASTTIMESTAMP)
+                                .setValue(Utils.getCurrentTime(ChatOnGoConstants.TIME_MMDDYYYY_HH_MM_SS));*/
                     FirebaseDatabase.getInstance().getReference("UsersChat")
                             .child(mallId)
-                            .child(OnGoConstants.FIREBASE_K_MSGGRPIDS)      //
+                            .child(ChatOnGoConstants.FIREBASE_K_MSGGRPIDS)      //
                             .child(selectedUserId)
                             .child("msg_id")
                             .setValue(msgId);
                         /*FirebaseDatabase.getInstance().getReference("UsersChat")
                                 .child(mallId)
-                                .child(OnGoConstants.FIREBASE_K_MSGGRPIDS)      //
+                                .child(ChatOnGoConstants.FIREBASE_K_MSGGRPIDS)      //
                                 .child(selectedUserId)
                                 .child("imageUrl")
                                 .setValue(selectedUserProfPic);*/
                         /*FirebaseDatabase.getInstance().getReference("UsersChat")
                                 .child(mallId)
-                                .child(OnGoConstants.FIREBASE_K_MSGGRPIDS)      //
+                                .child(ChatOnGoConstants.FIREBASE_K_MSGGRPIDS)      //
                                 .child(selectedUserId)
                                 .child("name")
                                 .setValue(selectedUserName);
                         FirebaseDatabase.getInstance().getReference("UsersChat")
                                 .child(mallId)
-                                .child(OnGoConstants.FIREBASE_K_MSGGRPIDS)      //
+                                .child(ChatOnGoConstants.FIREBASE_K_MSGGRPIDS)      //
                                 .child(selectedUserId)
                                 .child("userId")
                                 .setValue(selectedUserId);*/
@@ -290,15 +292,15 @@ public class ChatActivity extends AppCompatActivity {
                     /*FirebaseDatabase.getInstance().getReference()
                             .child("UsersChat")
                             .child(selectedUserId)                     //1907
-                            .child(OnGoConstants.FIREBASE_K_MSGGRPIDS)
+                            .child(ChatOnGoConstants.FIREBASE_K_MSGGRPIDS)
                             .child(Utils.getMallId(mContext))           //102
-                            .child(OnGoConstants.FIREBASE_K_UNREADCOUNT)
+                            .child(ChatOnGoConstants.FIREBASE_K_UNREADCOUNT)
                             .setValue(++selectedUserUnread);*/
 
 
 //                    new SendNotificationToTopicAsync(mContext.getString(R.string.fcm_auth_key),
 //                            selectedUserId,
-//                            mPref.getString(OnGoConstants.Name, "")+" "
+//                            mPref.getString(ChatOnGoConstants.Name, "")+" "
 //                                    +"has sent Message",selectedUserName
 //                            ,selectedUserId,selectedUserProfPic).execute();
 
@@ -307,9 +309,9 @@ public class ChatActivity extends AppCompatActivity {
                             selectedUserId, hashNoti).execute();
 
                    /* new SendNotificationToTopicAsync(mContext.getString(R.string.fcm_auth_key), selectedUserId,
-                            mPref.getString(OnGoConstants.Name, "") + " "
+                            mPref.getString(ChatOnGoConstants.Name, "") + " "
                                     + "sent a new message"
-                            , mPref.getString(OnGoConstants.Name, "")
+                            , mPref.getString(ChatOnGoConstants.Name, "")
                             , mallId
                             , selectedUserProfPic
                             , selectedUserUnread
@@ -328,20 +330,20 @@ public class ChatActivity extends AppCompatActivity {
 
 
     private void getUserChatId() {
-        final DatabaseReference databaseRefSelectedUser = firebaseDatabase.getReference(OnGoConstants.FIREBASE_T_USERS)
-                .child(mPref.getString(OnGoConstants.PREF_USER_ID, ""))
-                .child(OnGoConstants.FIREBASE_K_MSGGRPIDS).child(selectedUserId);
+        final DatabaseReference databaseRefSelectedUser = firebaseDatabase.getReference(ChatOnGoConstants.FIREBASE_T_USERS)
+                .child(mPref.getString(ChatOnGoConstants.PREF_USER_ID, ""))
+                .child(ChatOnGoConstants.FIREBASE_K_MSGGRPIDS).child(selectedUserId);
 
-        final DatabaseReference databaseRefLoggedInUser = firebaseDatabase.getReference(OnGoConstants.FIREBASE_T_USERS)
+        final DatabaseReference databaseRefLoggedInUser = firebaseDatabase.getReference(ChatOnGoConstants.FIREBASE_T_USERS)
                 .child(selectedUserId)
-                .child(OnGoConstants.FIREBASE_K_MSGGRPIDS).child(mPref.getString(OnGoConstants.PREF_USER_ID, ""));
+                .child(ChatOnGoConstants.FIREBASE_K_MSGGRPIDS).child(mPref.getString(ChatOnGoConstants.PREF_USER_ID, ""));
 
         databaseRefSelectedUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot != null && dataSnapshot.child(OnGoConstants.FIREBASE_K_MSG_ID).getValue() != null) {
+                if (dataSnapshot != null && dataSnapshot.child(ChatOnGoConstants.FIREBASE_K_MSG_ID).getValue() != null) {
                     // get chat id with user
-                    msgId = dataSnapshot.child(OnGoConstants.FIREBASE_K_MSG_ID).getValue().toString();
+                    msgId = dataSnapshot.child(ChatOnGoConstants.FIREBASE_K_MSG_ID).getValue().toString();
 
                     // here create chat for user or retrieve all chats and show in recycler
                     getChatMessages(msgId);
@@ -358,30 +360,30 @@ public class ChatActivity extends AppCompatActivity {
         databaseRefSelectedUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot != null && dataSnapshot.child(OnGoConstants.FIREBASE_K_MSG_ID).getValue() != null) {
+                if (dataSnapshot != null && dataSnapshot.child(ChatOnGoConstants.FIREBASE_K_MSG_ID).getValue() != null) {
 
                 } else {
                     // create child for chat id
                     msgId = System.currentTimeMillis() + "";
                     HashMap<String, Object> haspMap = new HashMap<>();
-                    haspMap.put(OnGoConstants.FIREBASE_K_MSG_ID, msgId);
-                    haspMap.put(OnGoConstants.FIREBASE_K_U_ID, selectedUserId);
-                    haspMap.put(OnGoConstants.FIREBASE_K_NAME, selectedUserName);
-                    haspMap.put(OnGoConstants.FIREBASE_K_IMAGE_URL, selectedUserProfPic);
-                    //haspMap.put(OnGoConstants.FIREBASE_K_UNREADCOUNT, 0);
-                    haspMap.put(OnGoConstants.FIREBASE_T_MESSAGE, lastmessage);
-                    haspMap.put(OnGoConstants.FIREBASE_K_U_UID, mallId);
+                    haspMap.put(ChatOnGoConstants.FIREBASE_K_MSG_ID, msgId);
+                    haspMap.put(ChatOnGoConstants.FIREBASE_K_U_ID, selectedUserId);
+                    haspMap.put(ChatOnGoConstants.FIREBASE_K_NAME, selectedUserName);
+                    haspMap.put(ChatOnGoConstants.FIREBASE_K_IMAGE_URL, selectedUserProfPic);
+                    //haspMap.put(ChatOnGoConstants.FIREBASE_K_UNREADCOUNT, 0);
+                    haspMap.put(ChatOnGoConstants.FIREBASE_T_MESSAGE, lastmessage);
+                    haspMap.put(ChatOnGoConstants.FIREBASE_K_U_UID, mallId);
                     databaseRefSelectedUser.setValue(haspMap);
                     // insert values for selected user
 
                     HashMap<String, Object> haspMapSelectedUser = new HashMap<>();
-                    haspMapSelectedUser.put(OnGoConstants.FIREBASE_K_MSG_ID, msgId);
-                    haspMapSelectedUser.put(OnGoConstants.FIREBASE_K_U_ID, mallId);
-                    haspMapSelectedUser.put(OnGoConstants.FIREBASE_K_NAME, userName);
-                    haspMapSelectedUser.put(OnGoConstants.FIREBASE_K_IMAGE_URL, SharedPref.read(OnGoConstants.PREF_PROFILE_IMAGE, ""));
-                    // haspMapSelectedUser.put(OnGoConstants.FIREBASE_K_UNREADCOUNT, 0);
-                    haspMapSelectedUser.put(OnGoConstants.FIREBASE_T_MESSAGE, lastmessage);
-                    haspMap.put(OnGoConstants.FIREBASE_K_U_UID, mallId);
+                    haspMapSelectedUser.put(ChatOnGoConstants.FIREBASE_K_MSG_ID, msgId);
+                    haspMapSelectedUser.put(ChatOnGoConstants.FIREBASE_K_U_ID, mallId);
+                    haspMapSelectedUser.put(ChatOnGoConstants.FIREBASE_K_NAME, userName);
+                    haspMapSelectedUser.put(ChatOnGoConstants.FIREBASE_K_IMAGE_URL, SharedPref.read(ChatOnGoConstants.PREF_PROFILE_IMAGE, ""));
+                    // haspMapSelectedUser.put(ChatOnGoConstants.FIREBASE_K_UNREADCOUNT, 0);
+                    haspMapSelectedUser.put(ChatOnGoConstants.FIREBASE_T_MESSAGE, lastmessage);
+                    haspMap.put(ChatOnGoConstants.FIREBASE_K_U_UID, mallId);
 
 
                     databaseRefLoggedInUser.setValue(haspMapSelectedUser);
@@ -397,7 +399,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void getChatMessages(final String msgId) {
-        DatabaseReference databaseChatRef = firebaseDatabase.getReference(OnGoConstants.FIREBASE_T_MESSAGES)
+        DatabaseReference databaseChatRef = firebaseDatabase.getReference(ChatOnGoConstants.FIREBASE_T_MESSAGES)
                 .child(msgId);
         databaseChatRef.addValueEventListener(new ValueEventListener() {
             @Override

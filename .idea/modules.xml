@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/FirebaseChatLibrary.iml" filepath="$PROJECT_DIR$/.idea/FirebaseChatLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ChatLibrary.iml" filepath="$PROJECT_DIR$/.idea/ChatLibrary.iml" />
+      <module fileurl="file://E:\Gufran\Workspace\ChatLibrary\.idea\FirebaseChatLibrary.iml" filepath="E:\Gufran\Workspace\ChatLibrary\.idea\FirebaseChatLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/firebasechatlib/firebasechatlib.iml" filepath="$PROJECT_DIR$/firebasechatlib/firebasechatlib.iml" />
     </modules>

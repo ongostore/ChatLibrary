@@ -14,7 +14,5 @@ public class MyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Firebase.setAndroidContext(getApplicationContext());
-        FirebaseApp.initializeApp(getApplicationContext());
     }
 }

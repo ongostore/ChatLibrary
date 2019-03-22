@@ -3,7 +3,7 @@ package com.ongo.firebasechatlib.utils;
 /**
  * @author ONGO-0006
  */
-public class OnGoConstants {
+public class ChatOnGoConstants {
     public static final String PREF_NAME = "OnGOPref";
     public static final String PREF_USER_NAME = "USER_NAME";
     public static final String PREF_USER_ID = "USER_ID";

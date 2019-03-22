@@ -10,9 +10,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.firebase.client.Firebase;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,7 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.ongo.firebasechatlib.R;
 import com.ongo.firebasechatlib.adapter.ChatListAdapter;
 import com.ongo.firebasechatlib.dto.UserDto;
-import com.ongo.firebasechatlib.utils.OnGoConstants;
+import com.ongo.firebasechatlib.utils.ChatOnGoConstants;
 import com.ongo.firebasechatlib.utils.SharedPref;
 import com.ongo.firebasechatlib.utils.Utils;
 
@@ -53,6 +54,8 @@ public class ChatListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Firebase.setAndroidContext(getApplicationContext());
+        FirebaseApp.initializeApp(getApplicationContext());
         setContentView(R.layout.activity_chat_list);
         mContext = this;
         SharedPref.init(mContext);
@@ -81,8 +84,8 @@ public class ChatListActivity extends AppCompatActivity {
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("UsersChat");
         DatabaseReference userDataRef = databaseReference.
-                child(SharedPref.read(OnGoConstants.PREF_USER_ID, ""))
-                .child(OnGoConstants.FIREBASE_K_MSGGRPIDS);
+                child(SharedPref.read(ChatOnGoConstants.PREF_USER_ID, ""))
+                .child(ChatOnGoConstants.FIREBASE_K_MSGGRPIDS);
 
         userDataRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -144,7 +147,7 @@ public class ChatListActivity extends AppCompatActivity {
             try {
                 String lhsTime = lhs.getLast_time_stamp();
                 String rhsTime = rhs.getLast_time_stamp();
-                SimpleDateFormat format = new SimpleDateFormat(OnGoConstants.TIME_MMDDYYYY_HH_MM_SS);
+                SimpleDateFormat format = new SimpleDateFormat(ChatOnGoConstants.TIME_MMDDYYYY_HH_MM_SS);
                 Date lhsDate = null;
                 Date rhsDate = null;
                 try {

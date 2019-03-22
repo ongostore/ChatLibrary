@@ -78,10 +78,10 @@ public class SendNotificationWithPayLoadAsync extends AsyncTask<Void, Void, Void
             /*jsonNotification.put("body", messaage);
             jsonNotification.put("title", "New Message");
             jsonNotification.put("sound", "default");
-            jsonNotification.put(OnGoConstants.SELECTED_USER_USERNAME, name);
-            jsonNotification.put(OnGoConstants.SELECTED_USER_PROFPIC, profPic);
-            jsonNotification.put(OnGoConstants.SELECTED_USER_ID, userId);
-            jsonNotification.put(OnGoConstants.FIREBASE_K_UNREADCOUNT, unreadCount);*/
+            jsonNotification.put(ChatOnGoConstants.SELECTED_USER_USERNAME, name);
+            jsonNotification.put(ChatOnGoConstants.SELECTED_USER_PROFPIC, profPic);
+            jsonNotification.put(ChatOnGoConstants.SELECTED_USER_ID, userId);
+            jsonNotification.put(ChatOnGoConstants.FIREBASE_K_UNREADCOUNT, unreadCount);*/
 
             jsonObject.put("data", jsonNotification);
             Log.e("jsonobj", ">>>>>>>>>>>>>....." + jsonObject.toString());
