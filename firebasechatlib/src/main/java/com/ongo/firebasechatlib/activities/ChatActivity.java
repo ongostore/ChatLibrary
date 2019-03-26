@@ -62,8 +62,6 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Firebase.setAndroidContext(getApplicationContext());
-        FirebaseApp.initializeApp(getApplicationContext());
         mContext = this;
         setContentView(R.layout.fragment_chat_new);
         SharedPref.init(mContext);
